@@ -7,7 +7,10 @@ package it.polito.tdp.crimes;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.crimes.model.Arco;
 import it.polito.tdp.crimes.model.Model;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,10 +28,10 @@ public class CrimesController {
     private URL location;
 
     @FXML // fx:id="boxCategoria"
-    private ComboBox<?> boxCategoria; // Value injected by FXMLLoader
+    private ComboBox<String> boxCategoria; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxMese"
-    private ComboBox<?> boxMese; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxMese; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnAnalisi"
     private Button btnAnalisi; // Value injected by FXMLLoader
@@ -46,6 +49,14 @@ public class CrimesController {
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Crea grafo...\n");
+    	this.model.creaGrafo(boxMese.getValue(), boxCategoria.getValue());
+    	
+    	txtResult.appendText("Vertici " +this.model.nVertici() + "\n");
+    	txtResult.appendText("Archi " +this.model.nArchi());
+    	
+    	for(Arco a : this.model.getPesoMax()) {
+    		txtResult.appendText(a.toString());
+    	}
     }
     
     @FXML
@@ -67,5 +78,13 @@ public class CrimesController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	ObservableList<String> lista = FXCollections.observableList(this.model.getCategory()) ;
+    	boxCategoria.setItems(lista);
+    	boxCategoria.setValue(lista.get(0));
+    	
+    	ObservableList<Integer> mesi = FXCollections.observableList(this.model.getMonth()) ;
+    	boxMese.setItems(mesi);
+    	boxMese.setValue(mesi.get(0));
+    	
     }
 }
